@@ -5,7 +5,9 @@ from sorting_algorithms import *
 algorithms = {
     0: {"name": "insertion sort", "algorithm": insertion_sort},
     1: {"name": "selection sort", "algorithm": selection_sort},
-    2: {"name": "heap sort", "algorithm": heap_sort}
+    2: {"name": "heap sort", "algorithm": heap_sort},
+    3: {"name": "quick sort with far-left pivot", "algorithm": quick_sort_left},
+    4: {"name": "quick sort with random pivot", "algorithm": quick_sort_left},
 }
 
 
