@@ -3,36 +3,9 @@ TODO:
 
 quick sorts, shell sort, 
 
-creating arrays of numbers, 
-
-timing functions / benchmark, 
-
 plotting the complexity graphs, 
 
-make the report
-
 """ 
-
-import random
-
-
-### ARRAY GENERATION
-
-
-def make_random_array(n, min_number: int = 0, max_number: int = 100):
-    return [random.randint(min_number, max_number) for _ in range(n)]
-
-
-def make_descending_array(n, min_number: int = 0, max_number: int = 100):
-    return sorted(make_random_array(n, min_number, max_number), reverse=True)
-
-
-def make_ascending_array(n, min_number: int = 0, max_number: int = 100):
-    return sorted(make_random_array(n, min_number, max_number), reverse=False)
-
-
-### SORTING ALGORITHMS IMPLEMENTATION
-
 
 def insertion_sort(array):
     for i in range(1, len(array)):  

@@ -1,12 +1,17 @@
 import sys
+from sorting_algorithms import *
 
-def sort_using_algorithm(data, algorithm):
-    # This function takes the algorithm identifier as input
-    # However, it always uses the sorted function in Python
 
-    sorted_data = sorted(data)
+algorithms = {
+    0: {"name": "insertion sort", "algorithm": insertion_sort},
+    1: {"name": "selection sort", "algorithm": selection_sort},
+    2: {"name": "heap sort", "algorithm": heap_sort}
+}
 
-    return sorted_data
+
+def sort_using_algorithm(data, algorithm_id: int):
+    algorithms[algorithm_id]["algorithm"](data)
+
 
 def main():
     # Command-line arguments: python script.py --algorithm <algorithm_number>
@@ -14,7 +19,7 @@ def main():
         print("Usage: python script.py --algorithm <algorithm_number>")
         sys.exit(1)
 
-    algorithm_number = int(sys.argv[2])
+    algorithm_id = int(sys.argv[2])
 
     # Read input data from standard input until the end of file (EOF)
     input=sys.stdin.read().split()
@@ -23,11 +28,11 @@ def main():
     except EOFError:
         print("Error reading input.")
 
-    # Perform sorting using the specified algorithm (ignored in this example)
-    sorted_data = sort_using_algorithm(data, algorithm_number)
+    sort_using_algorithm(data, algorithm_id)
 
     # Print the sorted data
-    print("Sorted data:", sorted_data[0:10], " using algorithm: ", algorithm_number)
+    print(f"Sorted data: {data[0:10]} using {algorithms[algorithm_id]["name"]} algorithm")
+
 
 if __name__ == "__main__":
     main()
