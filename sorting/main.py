@@ -3,17 +3,13 @@ from sorting_algorithms import *
 
 
 algorithms = {
-    0: {"name": "insertion sort", "algorithm": insertion_sort},
-    1: {"name": "selection sort", "algorithm": selection_sort},
-    2: {"name": "heap sort", "algorithm": heap_sort},
-    3: {"name": "quick sort with far-left pivot", "algorithm": quick_sort_left},
-    4: {"name": "quick sort with random pivot", "algorithm": quick_sort_left},
+    1: {"name": "insertion sort", "algorithm": insertion_sort},
+    2: {"name": "shell sort", "algorithm": shell_sort},
+    3: {"name": "selection sort", "algorithm": selection_sort},
+    4: {"name": "heap sort", "algorithm": heap_sort},
+    5: {"name": "quick sort with far-left pivot", "algorithm": quick_sort_left},
+    6: {"name": "quick sort with random pivot", "algorithm": quick_sort_rand},
 }
-
-
-def sort_using_algorithm(data, algorithm_id: int):
-    algorithms[algorithm_id]["algorithm"](data)
-
 
 def main():
     # Command-line arguments: python script.py --algorithm <algorithm_number>
@@ -30,7 +26,8 @@ def main():
     except EOFError:
         print("Error reading input.")
 
-    sort_using_algorithm(data, algorithm_id)
+    # Executes the sorting function that corresponds to the algorithm_id
+    algorithms[algorithm_id]["algorithm"](data)
 
     # Print the sorted data
     print(f"Sorted data: {data[0:10]} using {algorithms[algorithm_id]["name"]} algorithm")

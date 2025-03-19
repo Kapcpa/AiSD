@@ -1,8 +1,6 @@
 """
 TODO: 
 
-shell sort, 
-
 plotting the complexity graphs, 
 
 """ 
@@ -19,6 +17,22 @@ def insertion_sort(array):
             array[j + 1] = array[j]
             j -= 1
         array[j + 1] = key
+
+
+def shell_sort(array):
+    gaps = [1, 5, 19, 41, 109, 209, 505, 929]  
+    gaps = [g for g in gaps if g < len(array)]
+
+    for gap in reversed(gaps):
+        for i in range(gap, len(array)):
+            temp = array[i]
+            j = i
+
+            while j >= gap and array[j - gap] > temp:
+                array[j] = array[j - gap]
+                j -= gap
+
+            array[j] = temp
 
 
 def selection_sort(array):
