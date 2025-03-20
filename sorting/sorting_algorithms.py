@@ -1,11 +1,3 @@
-"""
-TODO: 
-
-plotting the complexity graphs, 
-
-""" 
-
-
 import random
 
 
@@ -20,8 +12,11 @@ def insertion_sort(array):
 
 
 def shell_sort(array):
-    gaps = [1, 5, 19, 41, 109, 209, 505, 929]  
-    gaps = [g for g in gaps if g < len(array)]
+    gaps = [1]
+    k = 0
+    while gaps[-1] < len(array) // 2:
+        gaps.append(4 ** (k + 1) + 3 * (2 ** k) + 1)
+        k += 1
 
     for gap in reversed(gaps):
         for i in range(gap, len(array)):

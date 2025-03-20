@@ -30,7 +30,7 @@ def main():
     algorithms[algorithm_id]["algorithm"](data)
 
     # Print the sorted data
-    print(f"Sorted data: {data[0:10]} using {algorithms[algorithm_id]["name"]} algorithm")
+    print(f"Sorted data: {data} using {algorithms[algorithm_id]["name"]} algorithm")
 
 
 if __name__ == "__main__":
