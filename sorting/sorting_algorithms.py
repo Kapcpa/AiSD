@@ -1,7 +1,7 @@
 import random
 
 
-def insertion_sort(array):
+def insertion_sort(array: list[int]):
     for i in range(1, len(array)):  
         key = array[i]
         j = i - 1
@@ -11,7 +11,7 @@ def insertion_sort(array):
         array[j + 1] = key
 
 
-def shell_sort(array):
+def shell_sort(array: list[int]):
     gaps = [1]
     k = 0
     while gaps[-1] < len(array) // 2:
@@ -30,7 +30,7 @@ def shell_sort(array):
             array[j] = temp
 
 
-def selection_sort(array):
+def selection_sort(array: list[int]):
     for i in range(len(array)):
         min_index = i
         for j in range(i + 1, len(array)):
@@ -39,7 +39,7 @@ def selection_sort(array):
         array[i], array[min_index] = array[min_index], array[i]  
 
 
-def make_heap(array, n, i):
+def make_heap(array: list[int], n: int, i: int):
     largest = i
     left = 2 * i + 1  
     right = 2 * i + 2  
@@ -55,7 +55,7 @@ def make_heap(array, n, i):
         make_heap(array, n, largest)
 
 
-def heap_sort(array):
+def heap_sort(array: list[int]):
     for i in range(len(array) // 2 - 1, -1, -1):
         make_heap(array, len(array), i)
 
@@ -64,7 +64,7 @@ def heap_sort(array):
         make_heap(array, i, 0)
 
 
-def quick_sort_left(array, p=None, r=None):
+def quick_sort_left(array: list[int], p: int | None = None, r: int | None = None):
     if p is None or r is None:
         p = 0
         r = len(array) - 1
@@ -75,7 +75,7 @@ def quick_sort_left(array, p=None, r=None):
         quick_sort_left(array, q + 1, r)
 
 
-def partition(array, p, r):
+def partition(array: list[int], p: int, r: int):
     pivot = array[p]
     i = p + 1
     j = r  
@@ -94,7 +94,7 @@ def partition(array, p, r):
     return j
 
 
-def quick_sort_rand(array, p=None, r=None):
+def quick_sort_rand(array: list[int], p: int | None = None, r: int | None = None):
     if p is None or r is None:
         p = 0
         r = len(array) - 1
@@ -105,7 +105,7 @@ def quick_sort_rand(array, p=None, r=None):
         quick_sort_rand(array, q + 1, r)
 
 
-def partition_rand(array, p, r):
+def partition_rand(array: list[int], p: int, r: int):
     """
     Idea is to reuse the partition_left to avoid writing more code
     so before we call partition() function we pick a random pivot and swap it with the first element

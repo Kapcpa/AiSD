@@ -11,6 +11,13 @@ algorithms = {
     6: {"name": "quick sort with random pivot", "algorithm": quick_sort_rand},
 }
 
+
+def log_data(data: list[int], max_display: int = 8):
+    if len(data) > 2 * max_display:
+        return f"[{', '.join(map(str, data[:max_display]))}, ..., {', '.join(map(str, data[-max_display:]))}]"
+    return str(data)
+
+
 def main():
     # Command-line arguments: python script.py --algorithm <algorithm_number>
     if len(sys.argv) != 3 or sys.argv[1] != "--algorithm":
@@ -30,7 +37,7 @@ def main():
     algorithms[algorithm_id]["algorithm"](data)
 
     # Print the sorted data
-    print(f"Sorted data: {data} using {algorithms[algorithm_id]["name"]} algorithm")
+    print(f"Sorted data: {log_data(data)} using {algorithms[algorithm_id]["name"]} algorithm")
 
 
 if __name__ == "__main__":
