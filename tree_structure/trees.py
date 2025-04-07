@@ -1,8 +1,18 @@
-class BST:
+class Node:
     def __init__(self, key: int):
         self.key: int = key
-        self.left: BST | None = None
-        self.right: BST | None = None
+        self.left: Node | None = None
+        self.right: Node | None = None
+
+
+class BST(Node):
+    ...
+
+
+class AVL(Node):
+    def __init__(self, key: int):
+        super().__init__(key)
+        self.height: int = 1
 
 
 def insert_bst(root: BST | None, key: int) -> BST:
@@ -14,3 +24,35 @@ def insert_bst(root: BST | None, key: int) -> BST:
         root.right = insert_bst(root.right, key)
     return root
 
+
+PRE_ORDER = 0
+IN_ORDER = 1
+POST_ORDER = 2
+def print_tree(node: Node | None, order: int) -> None:
+    if not node:
+        return
+    print(node.key, end=" ")    if order == PRE_ORDER else None
+    print_tree(node.left, order)
+    print(node.key, end=" ")    if order == IN_ORDER else None
+    print_tree(node.right, order)
+    print(node.key, end=" ")    if order == POST_ORDER else None
+
+
+def command_print(node: Node) -> None:
+    print("Pre-order: ", end="")
+    print_tree(node, PRE_ORDER)
+    print("\nIn-order: ", end="")
+    print_tree(node, IN_ORDER)
+    print("\nPost-order: ", end="")
+    print_tree(node, POST_ORDER)
+    print("")
+
+
+def command_help(*args) -> None:
+    print("Help:\tShow this message")
+    print("Print:\tPrints the tree using Pre-order, In-order, Post-order")
+    print("Exit:\tExits the program ( same as Ctrl + C )")
+
+
+def command_exit(*args) -> None:
+    exit(0)

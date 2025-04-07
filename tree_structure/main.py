@@ -1,15 +1,15 @@
 """
 TODO:
-- visualiser / export command (kinda)
-- correct tree initializations
-- menu
+- visualiser / export command
+- correct tree initializations (AVL)
 - commands implementation:
     - Find Max, Min, MinMax
-    - prints
     - remove
     - rebalance
     - delete
-    - Exit
+- cleaning up the code - try putting tree-specific implementations under correct classes,
+    and if the implementation works for both put it in the parent-class
+- maybe change the way the data is fed in (no need for nodes> actually...)
 
 """
 
@@ -24,6 +24,13 @@ tree_types = {
 }
 
 
+commands = {
+    "Help": command_help,
+    "Print": command_print,
+    "Exit": command_exit
+}
+
+
 def main():
     # Command-line arguments: python main.py --tree <tree-type>
     if len(sys.argv) != 3 or sys.argv[1] != "--tree" or sys.argv[2] not in tree_types:
@@ -35,32 +42,27 @@ def main():
     data: list[int] = []
 
     while True:
-        nodes = int(input("nodes>"))
-        data = [int(node) for node in input("insert>").split()]
+        nodes = int(input("nodes> "))
+        data = [int(node) for node in input("insert> ").split()]
         if len(data) == nodes:
             break
         print("ERROR: Declared amount of nodes does not match the data passed in")
     
-    bst: BST = None
+    tree: Node = None
     for key in data:
-        bst = insert_bst(bst, key)
+        tree = insert_bst(tree, key)
 
-    print(bst.left.key)
-
-    # input = sys.stdin.read().split()
-    # try:
-    #     data = [int(x) for x in input]
-    # except EOFError:
-    #     print("Error reading input.")
-
-
-    # Print the unsorted data
-    # print(f"Unsorted data: {log_data(data)}")
-
-    # Executes the sorting function that corresponds to the algorithm_id
-
-    # Print the sorted data
+    while True:
+        action = input("action> ")
+        if action not in commands:
+            print("ERROR: Invalid action. Type 'Help' to see possible actions")
+            continue
+        print(action)
+        commands[action](tree)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        command_exit()
