@@ -1,4 +1,21 @@
+"""
+TODO:
+- visualiser / export command (kinda)
+- correct tree initializations
+- menu
+- commands implementation:
+    - Find Max, Min, MinMax
+    - prints
+    - remove
+    - rebalance
+    - delete
+    - Exit
+
+"""
+
+
 import sys
+from trees import *
 
 
 tree_types = {
@@ -24,6 +41,12 @@ def main():
             break
         print("ERROR: Declared amount of nodes does not match the data passed in")
     
+    bst: BST = None
+    for key in data:
+        bst = insert_bst(bst, key)
+
+    print(bst.left.key)
+
     # input = sys.stdin.read().split()
     # try:
     #     data = [int(x) for x in input]
