@@ -2,6 +2,9 @@ import sys
 from sorting_algorithms import *
 
 
+sys.setrecursionlimit(2**20)
+
+
 algorithms = {
     1: {"name": "insertion sort", "algorithm": insertion_sort},
     2: {"name": "shell sort", "algorithm": shell_sort},
@@ -22,6 +25,9 @@ def main():
     # Command-line arguments: python script.py --algorithm <algorithm_number>
     if len(sys.argv) != 3 or sys.argv[1] != "--algorithm":
         print("Usage: python script.py --algorithm <algorithm_number>")
+        print("<algorithm_number> <algorithm_name>")
+        for i in algorithms:
+            print(f"{i} - {algorithms[i]["name"]}")
         sys.exit(1)
 
     algorithm_id = int(sys.argv[2])
@@ -32,6 +38,10 @@ def main():
         data = [int(x) for x in input]
     except EOFError:
         print("Error reading input.")
+
+
+    # Print the unsorted data
+    # print(f"Unsorted data: {log_data(data)}")
 
     # Executes the sorting function that corresponds to the algorithm_id
     algorithms[algorithm_id]["algorithm"](data)

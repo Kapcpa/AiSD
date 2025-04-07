@@ -1,33 +1,27 @@
 import random
 
 
-def insertion_sort(array: list[int]):
-    for i in range(1, len(array)):  
-        key = array[i]
-        j = i - 1
-        while j >= 0 and array[j] > key:  
-            array[j + 1] = array[j]
-            j -= 1
-        array[j + 1] = key
+def insertion_sort(array: list[int], gap: int = 1):
+    for i in range(gap, len(array)):
+        temp = array[i]
+        j = i
+
+        while j >= gap and array[j - gap] > temp:
+            array[j] = array[j - gap]
+            j -= gap
+
+        array[j] = temp
 
 
 def shell_sort(array: list[int]):
     gaps = [1]
     k = 0
     while gaps[-1] < len(array) // 2:
-        gaps.append(4 ** (k + 1) + 3 * (2 ** k) + 1)
+        gaps.append(4 ** (k + 1) + 3 * (2 ** k) + 1)  # computing sedgewick's gaps
         k += 1
 
     for gap in reversed(gaps):
-        for i in range(gap, len(array)):
-            temp = array[i]
-            j = i
-
-            while j >= gap and array[j - gap] > temp:
-                array[j] = array[j - gap]
-                j -= gap
-
-            array[j] = temp
+        insertion_sort(array, gap)
 
 
 def selection_sort(array: list[int]):
@@ -64,15 +58,32 @@ def heap_sort(array: list[int]):
         make_heap(array, i, 0)
 
 
+#def quick_sort_left(...):
+#    def pivot_left(arr):
+#        return arr[0]
+#    quick_sort(..., pivot_left)
+#    quick_sort(..., lambda arr : arr[0])
+
+#def quick_sort(..., pivot_f):
+#    ...
+#    pivot = pivot_f(...)
+#    ...
+
+
 def quick_sort_left(array: list[int], p: int | None = None, r: int | None = None):
     if p is None or r is None:
         p = 0
         r = len(array) - 1
 
-    if p < r:
+    while p < r:
         q = partition(array, p, r)
-        quick_sort_left(array, p, q - 1)
-        quick_sort_left(array, q + 1, r)
+
+        if q - p < r - q:
+            quick_sort_left(array, p, q - 1)
+            p = q + 1
+        else:
+            quick_sort_left(array, q + 1, r)
+            r = q - 1
 
 
 def partition(array: list[int], p: int, r: int):
