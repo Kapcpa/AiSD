@@ -1,0 +1,11 @@
+\node {2}
+child [missing]
+child {node {5}
+child [missing]
+child {node {10}
+child {node {6}
+child [missing]
+child {node {9}}}
+child {node {12}
+child [missing]
+child {node {13}}}}};

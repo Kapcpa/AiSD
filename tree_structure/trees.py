@@ -51,7 +51,37 @@ def command_print(node: Node) -> None:
 def command_help(*args) -> None:
     print("Help:\tShow this message")
     print("Print:\tPrints the tree using Pre-order, In-order, Post-order")
+    print("MinMax:\tPrints the min and max values in the tree")
+    print("Export:\tExports the tree to a .txt file that can be fed into tikzpicture")
     print("Exit:\tExits the program ( same as Ctrl + C )")
+
+
+def command_min_max(node: Node) -> None:
+    node_min = node
+    while node_min.left is not None:
+        node_min = node_min.left
+    print(f"Min: {node_min.key}")
+
+    node_max = node
+    while node_max.right is not None:
+        node_max = node_max.right
+    print(f"Max: {node_max.key}")
+
+
+def tikz_format(node: Node) -> str:
+    if not node.left and not node.right:
+        return f"node {{{node.key}}}"
+
+    left = f"child {{{tikz_format(node.left)}}}" if node.left else "child [missing]"
+    right = f"child {{{tikz_format(node.right)}}}" if node.right else "child [missing]"
+
+    return f"""node {{{node.key}}}\n{left}\n{right}"""
+
+
+def command_export(node: Node):
+    file = open("tree.txt", "w")
+    file.write("\\" + tikz_format(node) + ";")
+    print("Tree exported.")
 
 
 def command_exit(*args) -> None:
