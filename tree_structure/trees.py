@@ -1,28 +1,11 @@
+# SHARED FUNCTIONS
+
+
 class Node:
     def __init__(self, key: int):
         self.key: int = key
         self.left: Node | None = None
         self.right: Node | None = None
-
-
-class BST(Node):
-    ...
-
-
-class AVL(Node):
-    def __init__(self, key: int):
-        super().__init__(key)
-        self.height: int = 1
-
-
-def insert_bst(root: BST | None, key: int) -> BST:
-    if not root:
-        return BST(key)
-    if key < root.key:
-        root.left = insert_bst(root.left, key)
-    else:
-        root.right = insert_bst(root.right, key)
-    return root
 
 
 PRE_ORDER = 0
@@ -86,3 +69,110 @@ def command_export(node: Node):
 
 def command_exit(*args) -> None:
     exit(0)
+
+
+# BST FUNCTIONS
+
+
+class BST(Node):
+    ...
+
+
+def build_bst(root: BST | None, key: int) -> BST:
+    if not root:
+        return BST(key)
+    if key < root.key:
+        root.left = build_bst(root.left, key)
+    else:
+        root.right = build_bst(root.right, key)
+    return root
+
+
+def insert_bst(data: list[int]) -> BST:
+    tree: BST = None
+    for key in data:
+        tree = build_bst(tree, key)
+    return tree
+
+
+# AVL FUNCTIONS
+
+
+class AVL(Node):
+    def __init__(self, key: int):
+        super().__init__(key)
+        self.height: int = 1
+
+
+def height(node: AVL) -> int:
+    return node.height if node else 0
+
+
+def get_balance(node: AVL) -> int:
+    return height(node.left) - height(node.right) if node else 0
+
+
+def update_height(node: AVL) -> None:
+    node.height = 1 + max(height(node.left), height(node.right))
+
+
+def rotate_right(node: AVL) -> AVL:
+    other = node.left
+    T2 = other.right
+
+    other.right = node
+    node.left = T2
+
+    update_height(node)
+    update_height(other)
+
+    return other
+
+
+def rotate_left(node: AVL) -> AVL:
+    other = node.right
+    T2 = other.left
+
+    other.left = node
+    node.right = T2
+
+    update_height(node)
+    update_height(other)
+
+    return other
+
+
+def balance(node: AVL) -> AVL:
+    update_height(node)
+    branch_balance = get_balance(node)
+
+    if branch_balance > 1:
+        if get_balance(node.left) < 0:
+            node.left = rotate_left(node.left)
+        return rotate_right(node)
+
+    if branch_balance < -1:
+        if get_balance(node.right) > 0:
+            node.right = rotate_right(node.right)
+        return rotate_left(node)
+
+    return node
+
+
+def build_avl(data: list[int], start: int, end: int) -> AVL:
+    if start > end:
+        return None
+
+    mid = (start + end) // 2
+    node = AVL(data[mid])
+
+    node.left = build_avl(data, start, mid - 1)
+    node.right = build_avl(data, mid + 1, end)
+
+    return balance(node)
+
+
+def insert_avl(data: list[int]) -> AVL:
+    data = sorted(data)
+    tree: AVL = build_avl(data, 0, len(data) - 1)
+    return tree
