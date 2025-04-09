@@ -1,9 +1,6 @@
 """
 TODO:
-- commands implementation:
-    - remove
-    - rebalance
-    - delete
+- rebalance
 - understand the code
 - cleaning up the code - try putting tree-specific implementations under correct classes,
     and if the implementation works for both put it in the parent-class
@@ -26,6 +23,8 @@ commands = {
     "Help": command_help,
     "Print": command_print,
     "MinMax": command_min_max,
+    "Delete": command_delete,
+    "DeleteAll": command_delete_all,
     "Export": command_export,
     "Exit": command_exit
 }
@@ -44,11 +43,14 @@ def main():
     tree: Node = tree_init[tree_type](data)
 
     while True:
-        action = input("action> ")
+        action = input("action> ").strip()
         if action not in commands:
             print("ERROR: Invalid action. Type 'Help' to see possible actions.")
             continue
-        commands[action](tree)
+        elif tree is None and action != "Exit":
+            print("ERROR: Can't perform this action because the tree has been removed.")
+            continue
+        tree = commands[action](tree)
 
 
 if __name__ == "__main__":

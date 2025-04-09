@@ -1,4 +1,4 @@
-# SHARED FUNCTIONS
+# NODE CLASS
 
 
 class Node:
@@ -6,69 +6,6 @@ class Node:
         self.key: int = key
         self.left: Node | None = None
         self.right: Node | None = None
-
-
-PRE_ORDER = 0
-IN_ORDER = 1
-POST_ORDER = 2
-def print_tree(node: Node | None, order: int) -> None:
-    if not node:
-        return
-    print(node.key, end=" ")    if order == PRE_ORDER else None
-    print_tree(node.left, order)
-    print(node.key, end=" ")    if order == IN_ORDER else None
-    print_tree(node.right, order)
-    print(node.key, end=" ")    if order == POST_ORDER else None
-
-
-def command_print(node: Node) -> None:
-    print("Pre-order: ", end="")
-    print_tree(node, PRE_ORDER)
-    print("\nIn-order: ", end="")
-    print_tree(node, IN_ORDER)
-    print("\nPost-order: ", end="")
-    print_tree(node, POST_ORDER)
-    print("")
-
-
-def command_help(*args) -> None:
-    print("Help:\tShow this message")
-    print("Print:\tPrints the tree using Pre-order, In-order, Post-order")
-    print("MinMax:\tPrints the min and max values in the tree")
-    print("Export:\tExports the tree to a .txt file that can be fed into tikzpicture")
-    print("Exit:\tExits the program ( same as Ctrl + C )")
-
-
-def command_min_max(node: Node) -> None:
-    node_min = node
-    while node_min.left is not None:
-        node_min = node_min.left
-    print(f"Min: {node_min.key}")
-
-    node_max = node
-    while node_max.right is not None:
-        node_max = node_max.right
-    print(f"Max: {node_max.key}")
-
-
-def tikz_format(node: Node) -> str:
-    if not node.left and not node.right:
-        return f"node {{{node.key}}}"
-
-    left = f"child {{{tikz_format(node.left)}}}" if node.left else "child [missing]"
-    right = f"child {{{tikz_format(node.right)}}}" if node.right else "child [missing]"
-
-    return f"""node {{{node.key}}}\n{left}\n{right}"""
-
-
-def command_export(node: Node):
-    file = open("tree.txt", "w")
-    file.write("\\" + tikz_format(node) + ";")
-    print("Tree exported.")
-
-
-def command_exit(*args) -> None:
-    exit(0)
 
 
 # BST FUNCTIONS
@@ -174,5 +111,128 @@ def build_avl(data: list[int], start: int, end: int) -> AVL:
 
 def insert_avl(data: list[int]) -> AVL:
     data = sorted(data)
+    print(f"Sorted: {" ".join([str(number) for number in data])}")
     tree: AVL = build_avl(data, 0, len(data) - 1)
     return tree
+
+
+# SHARED FUNCTIONS
+
+
+PRE_ORDER = 0
+IN_ORDER = 1
+POST_ORDER = 2
+def traverse_tree(node: Node | None, order: int) -> list[int]:
+    if not node:
+        return []
+
+    result = []
+
+    result.append(node.key) if order == PRE_ORDER else None
+    result += traverse_tree(node.left, order)
+    result.append(node.key) if order == IN_ORDER else None
+    result += traverse_tree(node.right, order)
+    result.append(node.key) if order == POST_ORDER else None
+
+    return result
+
+
+def command_print(node: Node) -> Node:
+    print(f"Pre-order: {" ".join([str(number) for number in traverse_tree(node, PRE_ORDER)])}")
+    print(f"In-order: {" ".join([str(number) for number in traverse_tree(node, IN_ORDER)])}")
+    print(f"Post-order: {" ".join([str(number) for number in traverse_tree(node, POST_ORDER)])}")
+    return node
+
+
+def command_help(node: Node) -> Node:
+    print("Help: Show this message")
+    print("Print: Prints the tree using Pre-order, In-order, Post-order")
+    print("MinMax: Prints the min and max values in the tree")
+    print("Delete: Removes specified nodes from the tree")
+    print("DeleteAll: Removes the whole tree")
+    print("Export: Exports the tree to a .txt file that can be fed into tikzpicture")
+    print("Exit: Exits the program ( same as Ctrl + C )")
+
+    return node
+
+
+def min_node(node: Node) -> Node:
+    node_min = node
+    while node_min.left is not None:
+        node_min = node_min.left
+    return node_min
+
+
+def max_node(node: Node) -> Node:
+    node_max = node
+    while node_max.right is not None:
+        node_max = node_max.right
+    return node_max
+
+
+def command_min_max(node: Node) -> Node:
+    print(f"Min: {min_node(node).key}")
+    print(f"Max: {max_node(node).key}")
+
+    return node
+
+
+def tikz_format(node: Node) -> str:
+    if not node.left and not node.right:
+        return f"node {{{node.key}}}"
+
+    left = f"child {{{tikz_format(node.left)}}}" if node.left else "child [missing]"
+    right = f"child {{{tikz_format(node.right)}}}" if node.right else "child [missing]"
+
+    return f"""node {{{node.key}}}\n{left}\n{right}"""
+
+
+def command_export(node: Node) -> Node:
+    file = open("tree.txt", "w")
+    file.write("\\" + tikz_format(node) + ";")
+    print("Tree exported.")
+
+    return node
+
+
+def delete_node(node: Node, key: int) -> Node:
+    if not node:
+        print(f"Value {key} doesn't exist in the tree.")
+        return node
+
+    if key < node.key:
+        node.left = delete_node(node.left, key)
+    elif key > node.key:
+        node.right = delete_node(node.right, key)
+    else:
+        if not node.left:
+            return node.right
+        elif not node.right:
+            return node.left
+
+        temp = max_node(node.left)
+        node.key = temp.key
+        node.left = delete_node(node.left, temp.key)
+
+    return node
+
+
+def command_delete(node: Node) -> Node:
+    data: list[int] = [int(node) for node in input("nodes to delete> ").split()]
+    for key in data:
+        node = delete_node(node, key)
+
+    return None
+
+
+def command_delete_all(node: Node) -> Node:
+    post_order_traverse = traverse_tree(node, POST_ORDER)
+    print(f"Deleting: {" ".join([str(number) for number in post_order_traverse])}")
+    for key in traverse_tree(node, POST_ORDER):
+        delete_node(node, key)
+
+    return node
+
+
+def command_exit(*args) -> None:
+    exit(0)

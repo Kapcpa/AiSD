@@ -1,7 +1,0 @@
-\node {9}
-child {node {5}
-child {node {2}}
-child {node {6}}}
-child {node {12}
-child {node {10}}
-child {node {13}}};
