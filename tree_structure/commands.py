@@ -68,4 +68,7 @@ def command_exit(*args) -> None:
 
 
 def command_rebalance(node: Node) -> Node:
+    node = rebalance(node)
+    print(f"Pre-order: {" ".join([str(number) for number in traverse_tree(node, PRE_ORDER)])}")
+    
     return node

@@ -53,25 +53,20 @@ def update_height(node: AVL) -> None:
     node.height = 1 + max(height(node.left), height(node.right))
 
 
-def rotate_right(node: AVL) -> AVL:
-    other = node.left
-    T2 = other.right
+ROTATE_LEFT = 0
+ROTATE_RIGHT = 1
 
-    other.right = node
-    node.left = T2
-
-    update_height(node)
-    update_height(other)
-
-    return other
-
-
-def rotate_left(node: AVL) -> AVL:
-    other = node.right
-    T2 = other.left
-
-    other.left = node
-    node.right = T2
+def rotate(node: AVL, rotation: int) -> AVL:
+    if rotation == ROTATE_LEFT:
+        other = node.right
+        T = other.left
+        other.left = node
+        node.right = T
+    elif rotation == ROTATE_RIGHT:
+        other = node.left
+        T = other.right
+        other.right = node
+        node.left = T
 
     update_height(node)
     update_height(other)
@@ -85,13 +80,13 @@ def balance(node: AVL) -> AVL:
 
     if branch_balance > 1:
         if get_balance(node.left) < 0:
-            node.left = rotate_left(node.left)
-        return rotate_right(node)
+            node.left = rotate(node.left, ROTATE_LEFT)
+        return rotate(node, ROTATE_RIGHT)
 
     if branch_balance < -1:
         if get_balance(node.right) > 0:
-            node.right = rotate_right(node.right)
-        return rotate_left(node)
+            node.right = rotate(node.right, ROTATE_RIGHT)
+        return rotate(node, ROTATE_LEFT)
 
     return node
 
@@ -169,5 +164,68 @@ def delete_node(node: Node, key: int) -> Node:
         temp = max_node(node.left)
         node.key = temp.key
         node.left = delete_node(node.left, temp.key)
+
+    return node
+
+
+def rebalance(node: Node) -> Node:
+    tree_type: type[Node] = type(node)
+
+    def vine(node: Node) -> Node:
+        grandparent = None
+        current = node
+
+        while current:
+            if current.left:
+                left = current.left
+                current.left = left.right
+                left.right = current
+                if grandparent:
+                    grandparent.right = left
+                else:
+                    node = left
+                current = left
+            else:
+                grandparent = current
+                current = current.right
+
+        return node
+
+
+    def count_nodes(node: Node) -> int:
+        count = 0
+        while node:
+            count += 1
+            node = node.right
+        return count
+
+
+    def rotate_left_grandparent(grandparent: Node, parent: Node) -> None:
+        child = parent.right
+        parent.right = child.left
+        child.left = parent
+        grandparent.right = child
+
+
+    def do_rotations(node: Node, count: int) -> Node:
+        dummy = tree_type(None)
+        dummy.right = node
+        current = dummy
+        for _ in range(count):
+            if current.right:
+                rotate_left_grandparent(current, current.right)
+            current = current.right
+        return dummy.right
+
+
+    node = vine(node)
+    n = count_nodes(node)
+    m = 2 ** (n.bit_length()) - 1
+
+    node = do_rotations(node, n - m)
+    while m > 1:
+        m //= 2
+        node = do_rotations(node, m)
+
 
     return node

@@ -1,6 +1,5 @@
 """
 TODO:
-- rebalance
 - understand the code
 - cleaning up the code - try putting tree-specific implementations under correct classes,
     and if the implementation works for both put it in the parent-class
@@ -24,6 +23,7 @@ commands = {
     "Help": command_help,
     "Print": command_print,
     "MinMax": command_min_max,
+    "Rebalance": command_rebalance,
     "Delete": command_delete,
     "DeleteAll": command_delete_all,
     "Export": command_export,
