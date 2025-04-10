@@ -11,11 +11,12 @@ TODO:
 
 import sys
 from trees import *
+from commands import *
 
 
 tree_init = {
-    "AVL": insert_avl, 
-    "BST": insert_bst
+    "AVL": build_avl, 
+    "BST": build_bst
 }
 
 
