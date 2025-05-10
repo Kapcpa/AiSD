@@ -51,7 +51,7 @@ def command_delete(node: Node) -> Node:
     for key in data:
         node = delete_node(node, key)
 
-    return None
+    return node
 
 
 def command_delete_all(node: Node) -> Node:

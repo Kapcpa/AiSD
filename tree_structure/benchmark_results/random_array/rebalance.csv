@@ -1,0 +1,17 @@
+Algorithm,InputSize,Time
+rebalance,4,50509
+rebalance,8,34576
+rebalance,16,45368
+rebalance,32,59698
+rebalance,64,124357
+rebalance,128,110847
+rebalance,256,178974
+rebalance,512,355991
+rebalance,1024,617433
+rebalance,2048,1561929
+rebalance,4096,2994805
+rebalance,8192,6400054
+rebalance,16384,10764565
+rebalance,32768,55701403
+rebalance,65536,122451837
+rebalance,131072,296869770

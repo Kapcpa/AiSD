@@ -1,13 +1,3 @@
-"""
-TODO:
-- understand the code
-- cleaning up the code - try putting tree-specific implementations under correct classes,
-    and if the implementation works for both put it in the parent-class
-- make it so it works with heredoc better ??? (tho i think it does work)
-
-"""
-
-
 import sys
 from trees import *
 from commands import *
@@ -30,6 +20,8 @@ commands = {
     "Exit": command_exit
 }
 
+# func = globals()["MinMax"]
+# func()
 
 def main():
     # Command-line arguments: python main.py --tree <tree-type>

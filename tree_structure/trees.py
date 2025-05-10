@@ -198,23 +198,19 @@ def rebalance(node: Node) -> Node:
             count += 1
             node = node.right
         return count
-
-
-    def rotate_left_grandparent(grandparent: Node, parent: Node) -> None:
-        child = parent.right
-        parent.right = child.left
-        child.left = parent
-        grandparent.right = child
-
+    
 
     def do_rotations(node: Node, count: int) -> Node:
         dummy = tree_type(None)
         dummy.right = node
         current = dummy
         for _ in range(count):
-            if current.right:
-                rotate_left_grandparent(current, current.right)
-            current = current.right
+            if current.right and current.right.right:
+                child = current.right.right
+                current.right.right = child.left
+                child.left = current.right
+                current.right = child
+            current = current.right if current.right else current
         return dummy.right
 
 
