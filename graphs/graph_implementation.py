@@ -8,7 +8,7 @@ class Graph:
     def find(self): pass
 
     @property
-    def start_node(self) -> int | None: pass
+    def start_nodes(self) -> list[int]: pass
 
     def bfs(self): pass
 
@@ -37,14 +37,15 @@ class AdjacencyListGraph(Graph):
         print(f"Edge {(u, v)} {"does" if v in self.adjacent[u] else "does not"} exist in the graph")
 
     @property
-    def start_node(self) -> int | None:
+    def start_nodes(self) -> list[int]:
+        start_nodes = []
         for node in range(self.nodes):
             if all([node not in edges for edges in self.adjacent]):
-                return node
-        return None
+                start_nodes.append(node)
+        return start_nodes
 
     def bfs(self):
-        start = self.start_node
+        start = self.start_nodes[0]
 
         visited = [False] * self.nodes
         queue = [start]
@@ -71,9 +72,51 @@ class AdjacencyListGraph(Graph):
                     dfs_recursive(v)
         
         print("DFS> ", end=" ")
-        dfs_recursive(self.start_node)
+        dfs_recursive(self.start_nodes[0])
         print()
+    
+    def topological_sort_kahn(self):
+        queue = self.start_nodes.copy()
+        ordered = []
+        edges = [(u, v) for u in range(self.nodes) for v in self.adjacent[u]]
 
+        while queue:
+            node = queue.pop(0)
+            ordered.append(node)
+            for v in self.adjacent[node]:
+                edges.remove((node, v))
+                if not any((u, v) in edges for u in range(self.nodes)):
+                    queue.append(v)
+        
+        if edges:
+            raise ValueError("Graph has a cycle")
+        print(f"Topological order using Kahn Algorithm: {ordered}")
+
+    def topological_sort_tarjan(self):
+        permanent = set()
+        temporary = set()
+        ordered = []
+
+        def visit(n):
+            if n in permanent:
+                return
+            if n in temporary:
+                raise ValueError("Graph has a cycle")
+            
+            temporary.add(n)
+            for m in self.adjacent[n]:
+                visit(m)
+            temporary.remove(n)
+            permanent.add(n)
+            ordered.append(n)
+
+        for n in range(self.nodes):
+            if n not in permanent:
+                visit(n)
+
+        ordered.reverse()
+        print(f"Topological order using Tarjan Algorithm: {ordered}")
+        
 
 class EdgeTableGraph(Graph):
     def __init__(self, nodes: int):
@@ -94,14 +137,14 @@ class EdgeTableGraph(Graph):
         print(f"Edge {(u, v)} {'does' if (u, v) in self.edges else 'does not'} exist in the graph")
 
     @property
-    def start_node(self) -> int | None:
+    def start_nodes(self) -> list[int]:
         all_nodes = set(range(self.nodes))
         destinations = {v for _, v in self.edges}
         sources = all_nodes - destinations
-        return min(sources) if sources else None
+        return sorted(sources)
 
     def bfs(self):
-        start = self.start_node
+        start = self.start_nodes[0]
         visited = [False] * self.nodes
         queue = [start]
         visited[start] = True
@@ -125,9 +168,9 @@ class EdgeTableGraph(Graph):
             for v in [v for (x, v) in self.edges if x == u]:
                 if not visited[v]:
                     dfs_recursive(v)
-        
+
         print("DFS> ", end=" ")
-        dfs_recursive(self.start_node)
+        dfs_recursive(self.start_nodes[0])
         print()
 
 
@@ -150,14 +193,15 @@ class MatrixGraph(Graph):
         print(f"Edge {(u, v)} {'does' if self.matrix[u][v] else 'does not'} exist in the graph")
 
     @property
-    def start_node(self) -> int | None:
+    def start_nodes(self) -> list[int]:
+        start_nodes = []
         for node in range(self.nodes):
             if all(self.matrix[other][node] == 0 for other in range(self.nodes)):
-                return node
-        return None
+                start_nodes.append(node)
+        return start_nodes
 
     def bfs(self):
-        start = self.start_node
+        start = self.start_nodes[0]
         visited = [False] * self.nodes
         queue = [start]
         visited[start] = True
@@ -181,7 +225,7 @@ class MatrixGraph(Graph):
             for v in range(self.nodes):
                 if self.matrix[u][v] and not visited[v]:
                     dfs_recursive(v)
-        
+
         print("DFS> ", end=" ")
-        dfs_recursive(self.start_node)
+        dfs_recursive(self.start_nodes[0])
         print()

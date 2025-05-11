@@ -26,6 +26,10 @@ def main():
             graph.bfs()
         elif action == "DFS":
             graph.dfs()
+        elif action == "Kahn":
+            graph.topological_sort_kahn()
+        elif action == "Tarjan":
+            graph.topological_sort_tarjan()
         elif action == "Exit":
             return
         else:
