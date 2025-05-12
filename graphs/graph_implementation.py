@@ -173,6 +173,47 @@ class EdgeTableGraph(Graph):
         dfs_recursive(self.start_nodes[0])
         print()
 
+    def topological_sort_kahn(self):
+        queue = self.start_nodes.copy()
+        ordered = []
+        edges = self.edges.copy()
+
+        while queue:
+            node = queue.pop(0)
+            ordered.append(node)
+            for _, v in [e for e in edges if e[0] == node]:
+                edges.remove((node, v))
+                if not any(u == other for u, other in edges if other == v):
+                    queue.append(v)
+
+        if edges:
+            raise ValueError("Graph has a cycle")
+        print(f"Topological order using Kahn Algorithm: {ordered}")
+
+    def topological_sort_tarjan(self):
+        permanent = set()
+        temporary = set()
+        ordered = []
+
+        def visit(n):
+            if n in permanent:
+                return
+            if n in temporary:
+                raise ValueError("Graph has a cycle")
+            temporary.add(n)
+            for _, m in [e for e in self.edges if e[0] == n]:
+                visit(m)
+            temporary.remove(n)
+            permanent.add(n)
+            ordered.append(n)
+
+        for n in range(self.nodes):
+            if n not in permanent:
+                visit(n)
+
+        ordered.reverse()
+        print(f"Topological order using Tarjan Algorithm: {ordered}")
+
 
 class MatrixGraph(Graph):
     def __init__(self, nodes: int):
@@ -229,3 +270,46 @@ class MatrixGraph(Graph):
         print("DFS> ", end=" ")
         dfs_recursive(self.start_nodes[0])
         print()
+
+    def topological_sort_kahn(self):
+        queue = self.start_nodes.copy()
+        ordered = []
+        edges = [(u, v) for u in range(self.nodes) for v in range(self.nodes) if self.matrix[u][v]]
+
+        while queue:
+            node = queue.pop(0)
+            ordered.append(node)
+            for v in range(self.nodes):
+                if self.matrix[node][v]:
+                    edges.remove((node, v))
+                    if not any((u, v) in edges for u in range(self.nodes)):
+                        queue.append(v)
+
+        if edges:
+            raise ValueError("Graph has a cycle")
+        print(f"Topological order using Kahn Algorithm: {ordered}")
+
+    def topological_sort_tarjan(self):
+        permanent = set()
+        temporary = set()
+        ordered = []
+
+        def visit(n):
+            if n in permanent:
+                return
+            if n in temporary:
+                raise ValueError("Graph has a cycle")
+            temporary.add(n)
+            for m in range(self.nodes):
+                if self.matrix[n][m]:
+                    visit(m)
+            temporary.remove(n)
+            permanent.add(n)
+            ordered.append(n)
+
+        for n in range(self.nodes):
+            if n not in permanent:
+                visit(n)
+
+        ordered.reverse()
+        print(f"Topological order using Tarjan Algorithm: {ordered}")

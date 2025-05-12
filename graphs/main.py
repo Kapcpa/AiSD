@@ -30,6 +30,14 @@ def main():
             graph.topological_sort_kahn()
         elif action == "Tarjan":
             graph.topological_sort_tarjan()
+        elif action == "Help":
+            print("Help - Shows this message")
+            print("Print - Prints the graph in its representation")
+            print("Find - Checks if an edge exists from start node to end node")
+            print("BFS - Prints the graph nodes in a Breadth First Search order")
+            print("DFS - Prints the graph nodes in a Depth First Search order")
+            print("Kahn - Prints topologically sorted graph using Kahn's Algorithm")
+            print("Tarjan - Prints topologically sorted graph using Tarjan's Algorithm")
         elif action == "Exit":
             return
         else:
