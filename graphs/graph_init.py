@@ -10,11 +10,15 @@ graph_types: dict[str, type[Graph]] = {
 
 
 def graph_generated() -> Graph:
-    nodes = int(input("nodes> "))
-    saturation = int(input("saturation> "))
-    if saturation < 0 or saturation > 100:
-        raise ValueError("Saturation must be between 0 and 100")
-    
+    try:
+        nodes = int(input("nodes> "))
+
+        saturation = int(input("saturation> "))
+        if saturation < 0 or saturation > 100:
+            raise ValueError("Saturation must be between 0 and 100")
+    except ValueError:
+        raise ValueError("Provided input wasn't a number")
+
     graph_type = input("type> ")
     while graph_type not in graph_types:
         print("ERROR: Please pick one of the following types: list table matrix")
@@ -32,14 +36,21 @@ def graph_generated() -> Graph:
 
 
 def graph_provided() -> Graph:
-    nodes = int(input("nodes> "))
+    try:
+        nodes = int(input("nodes> "))
+    except ValueError:
+        raise ValueError("Provided input wasn't a number")
+
     adjacent = []
     for i in range(nodes):
-        adjacent_nodes = [int(node) for node in input(f"{i}> ").strip().split()]
+        try:
+            adjacent_nodes = [int(node) for node in input(f"{i}> ").strip().split()]
+        except ValueError:
+            raise ValueError("Provided input wasn't a number")
+
         if any(node < 0 or node >= nodes for node in adjacent_nodes):
             raise ValueError("Invalid nodes were provided")
         adjacent.append(adjacent_nodes)
-
     
     graph_type = input("type> ")
     while graph_type not in graph_types:

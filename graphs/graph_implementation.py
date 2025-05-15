@@ -32,8 +32,11 @@ class AdjacencyListGraph(Graph):
             print(f"{i}: {self.adjacent[i]}")
     
     def find(self):
-        u = int(input("from> "))
-        v = int(input("to> "))
+        try:
+            u = int(input("from> "))
+            v = int(input("to> "))
+        except ValueError:
+            raise ValueError("Provided input wasn't a number")
         print(f"Edge {(u, v)} {"does" if v in self.adjacent[u] else "does not"} exist in the graph")
 
     @property
@@ -132,8 +135,11 @@ class EdgeTableGraph(Graph):
             print(f"{u} -> {v}")
 
     def find(self):
-        u = int(input("from> "))
-        v = int(input("to> "))
+        try:
+            u = int(input("from> "))
+            v = int(input("to> "))
+        except ValueError:
+            raise ValueError("Provided input wasn't a number")
         print(f"Edge {(u, v)} {'does' if (u, v) in self.edges else 'does not'} exist in the graph")
 
     @property
@@ -225,12 +231,20 @@ class MatrixGraph(Graph):
 
     def print(self):
         print("Adjacency Matrix:")
-        for row in self.matrix:
-            print(" ".join(map(str, row)))
+        print("    | " + " ".join(str(i + 1) for i in range(self.nodes)))
+        print(" ---+" + "-" * (3 * self.nodes - 4))
+        for i in range(self.nodes):
+            label = f"{i + 1:>3} | "
+            data = " ".join(str(value) for value in self.matrix[i])
+            print(label + data)
 
     def find(self):
-        u = int(input("from> "))
-        v = int(input("to> "))
+        try:
+            u = int(input("from> "))
+            v = int(input("to> "))
+        except ValueError:
+            raise ValueError("Provided input wasn't a number")
+
         print(f"Edge {(u, v)} {'does' if self.matrix[u][v] else 'does not'} exist in the graph")
 
     @property

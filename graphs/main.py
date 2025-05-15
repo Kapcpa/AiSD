@@ -17,20 +17,20 @@ def main():
     graph = graph_init[sys.argv[2]]()
 
     while True:
-        action = input("action> ").strip()
-        if action == "Print":
+        action = input("action> ").strip().upper()
+        if action == "PRINT":
             graph.print()
-        elif action == "Find":
+        elif action == "FIND":
             graph.find()
         elif action == "BFS":
             graph.bfs()
         elif action == "DFS":
             graph.dfs()
-        elif action == "Kahn":
+        elif action == "KAHN":
             graph.topological_sort_kahn()
-        elif action == "Tarjan":
+        elif action == "TARJAN":
             graph.topological_sort_tarjan()
-        elif action == "Help":
+        elif action == "HELP":
             print("Help - Shows this message")
             print("Print - Prints the graph in its representation")
             print("Find - Checks if an edge exists from start node to end node")
@@ -38,7 +38,8 @@ def main():
             print("DFS - Prints the graph nodes in a Depth First Search order")
             print("Kahn - Prints topologically sorted graph using Kahn's Algorithm")
             print("Tarjan - Prints topologically sorted graph using Tarjan's Algorithm")
-        elif action == "Exit":
+            print("Exit - Exits the program")
+        elif action == "EXIT":
             return
         else:
             print("ERROR: Invalid action. Type 'Help' to see possible actions.")
