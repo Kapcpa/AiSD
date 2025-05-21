@@ -1,3 +1,6 @@
+import math
+
+
 class Graph:
     def __init__(self, nodes: int): pass
 
@@ -231,10 +234,10 @@ class MatrixGraph(Graph):
 
     def print(self):
         print("Adjacency Matrix:")
-        print("    | " + " ".join(str(i + 1) for i in range(self.nodes)))
+        print("    | " + " ".join(str(i) for i in range(self.nodes)))
         print(" ---+" + "-" * (3 * self.nodes - 4))
         for i in range(self.nodes):
-            label = f"{i + 1:>3} | "
+            label = f"{i:>3} | "
             data = " ".join(str(value) for value in self.matrix[i])
             print(label + data)
 
@@ -327,3 +330,49 @@ class MatrixGraph(Graph):
 
         ordered.reverse()
         print(f"Topological order using Tarjan Algorithm: {ordered}")
+
+
+def export_tikz(graph: AdjacencyListGraph | EdgeTableGraph | MatrixGraph, radius: int = 3):
+    nodes = set()
+    edges = []
+    if type(graph) is AdjacencyListGraph:
+        for u in graph.adjacent:
+            nodes.add(u)
+            for v in graph.adjacent[u]:
+                nodes.add(v)
+                edges.append((u, v))
+    elif type(graph) is EdgeTableGraph:
+        for u, v in graph.edges:
+            nodes.add(u)
+            nodes.add(v)
+            edges.append((u, v))
+    elif type(graph) is MatrixGraph:
+        for u in range(graph.nodes):
+            nodes.add(u)
+            for v in range(graph.nodes):
+                if graph.matrix[u][v]:
+                    nodes.add(v)
+                    edges.append((u, v))
+    else:
+        return
+    
+    nodes = sorted(nodes)
+    node_pos = {}
+    for i, node in enumerate(nodes):
+        angle = 2 * math.pi * i / graph.nodes
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        node_pos[node] = (x, y)       
+
+    file = open("graph.txt", "w")
+
+    file.write("\\begin{tikzpicture}[->,>=stealth,thick] \n") 
+    file.write("  % Nodes \n")
+    for node in nodes:
+        x, y = node_pos[node]
+        file.write(f"  \\node[circle,draw] ({node}) at ({x:.2f},{y:.2f}) {{{node}}}; \n")
+
+    file.write("\n  % Edges \n")
+    for u, v in edges:
+        file.write(f"  \\draw[->] ({u}) -- ({v}); \n")
+    file.write("\\end{tikzpicture}")

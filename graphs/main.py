@@ -30,6 +30,8 @@ def main():
             graph.topological_sort_kahn()
         elif action == "TARJAN":
             graph.topological_sort_tarjan()
+        elif action == "EXPORT":
+            export_tikz(graph)
         elif action == "HELP":
             print("Help - Shows this message")
             print("Print - Prints the graph in its representation")
@@ -38,6 +40,7 @@ def main():
             print("DFS - Prints the graph nodes in a Depth First Search order")
             print("Kahn - Prints topologically sorted graph using Kahn's Algorithm")
             print("Tarjan - Prints topologically sorted graph using Tarjan's Algorithm")
+            print("Export - Exports the graph to tikz")
             print("Exit - Exits the program")
         elif action == "EXIT":
             return
