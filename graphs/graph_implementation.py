@@ -1,4 +1,9 @@
 import math
+import sys
+from collections import defaultdict, deque
+
+
+sys.setrecursionlimit(2**20)
 
 
 class Graph:
@@ -82,19 +87,23 @@ class AdjacencyListGraph(Graph):
         print()
     
     def topological_sort_kahn(self):
-        queue = self.start_nodes.copy()
+        in_degree = [0] * self.nodes
+        for u in range(self.nodes):
+            for v in self.adjacent[u]:
+                in_degree[v] += 1
+
+        queue = deque([u for u in range(self.nodes) if in_degree[u] == 0])
         ordered = []
-        edges = [(u, v) for u in range(self.nodes) for v in self.adjacent[u]]
 
         while queue:
-            node = queue.pop(0)
-            ordered.append(node)
-            for v in self.adjacent[node]:
-                edges.remove((node, v))
-                if not any((u, v) in edges for u in range(self.nodes)):
+            u = queue.popleft()
+            ordered.append(u)
+            for v in self.adjacent[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
                     queue.append(v)
-        
-        if edges:
+
+        if len(ordered) != self.nodes:
             raise ValueError("Graph has a cycle")
         print(f"Topological order using Kahn Algorithm: {ordered}")
 
@@ -183,45 +192,52 @@ class EdgeTableGraph(Graph):
         print()
 
     def topological_sort_kahn(self):
-        queue = self.start_nodes.copy()
+        in_degree = [0] * self.nodes
+        adjacency = defaultdict(list)
+
+        for u, v in self.edges:
+            adjacency[u].append(v)
+            in_degree[v] += 1
+
+        queue = deque([u for u in range(self.nodes) if in_degree[u] == 0])
         ordered = []
-        edges = self.edges.copy()
 
         while queue:
-            node = queue.pop(0)
-            ordered.append(node)
-            for _, v in [e for e in edges if e[0] == node]:
-                edges.remove((node, v))
-                if not any(u == other for u, other in edges if other == v):
+            u = queue.popleft()
+            ordered.append(u)
+            for v in adjacency[u]:
+                in_degree[v] -= 1
+                if in_degree[v] == 0:
                     queue.append(v)
 
-        if edges:
+        if len(ordered) != self.nodes:
             raise ValueError("Graph has a cycle")
         print(f"Topological order using Kahn Algorithm: {ordered}")
 
     def topological_sort_tarjan(self):
-        permanent = set()
-        temporary = set()
+        adjacency = defaultdict(list)
+        for u, v in self.edges:
+            adjacency[u].append(v)
+
+        visited = [0] * self.nodes  # 0: unvisited, 1: visiting, 2: visited
         ordered = []
 
         def visit(n):
-            if n in permanent:
-                return
-            if n in temporary:
+            if visited[n] == 1:
                 raise ValueError("Graph has a cycle")
-            temporary.add(n)
-            for _, m in [e for e in self.edges if e[0] == n]:
+            if visited[n] == 2:
+                return
+            visited[n] = 1
+            for m in adjacency[n]:
                 visit(m)
-            temporary.remove(n)
-            permanent.add(n)
+            visited[n] = 2
             ordered.append(n)
 
         for n in range(self.nodes):
-            if n not in permanent:
+            if visited[n] == 0:
                 visit(n)
-
-        ordered.reverse()
-        print(f"Topological order using Tarjan Algorithm: {ordered}")
+        
+        print(f"Topological order using Tarjan Algorithm: {list(reversed(ordered))}")
 
 
 class MatrixGraph(Graph):
@@ -289,20 +305,25 @@ class MatrixGraph(Graph):
         print()
 
     def topological_sort_kahn(self):
-        queue = self.start_nodes.copy()
+        in_degree = [0] * self.nodes
+        for u in range(self.nodes):
+            for v in range(self.nodes):
+                if self.matrix[u][v]:
+                    in_degree[v] += 1
+
+        queue = deque([u for u in range(self.nodes) if in_degree[u] == 0])
         ordered = []
-        edges = [(u, v) for u in range(self.nodes) for v in range(self.nodes) if self.matrix[u][v]]
 
         while queue:
-            node = queue.pop(0)
-            ordered.append(node)
+            u = queue.popleft()
+            ordered.append(u)
             for v in range(self.nodes):
-                if self.matrix[node][v]:
-                    edges.remove((node, v))
-                    if not any((u, v) in edges for u in range(self.nodes)):
+                if self.matrix[u][v]:
+                    in_degree[v] -= 1
+                    if in_degree[v] == 0:
                         queue.append(v)
 
-        if edges:
+        if len(ordered) != self.nodes:
             raise ValueError("Graph has a cycle")
         print(f"Topological order using Kahn Algorithm: {ordered}")
 
@@ -336,7 +357,7 @@ def export_tikz(graph: AdjacencyListGraph | EdgeTableGraph | MatrixGraph, radius
     nodes = set()
     edges = []
     if type(graph) is AdjacencyListGraph:
-        for u in graph.adjacent:
+        for u in range(graph.nodes):
             nodes.add(u)
             for v in graph.adjacent[u]:
                 nodes.add(v)
