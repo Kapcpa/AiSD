@@ -3,6 +3,10 @@ class AdjacencyListGraph:
         self.n = n
         self.adj = {i: set() for i in range(n)}
 
+    @property
+    def edges(self) -> int:
+        return sum(len(neighbors) for neighbors in self.adj.values()) // 2
+
     def add_edge(self, u: int, v: int):
         self.adj[u].add(v)
         self.adj[v].add(u)
@@ -11,26 +15,21 @@ class AdjacencyListGraph:
         self.adj[u].discard(v)
         self.adj[v].discard(u)
 
-    def has_edge(self, u: int, v: int):
+    def find(self, u: int, v: int):
         return v in self.adj[u]
 
-    @property
-    def edge_count(self) -> int:
-        return sum(len(neighbors) for neighbors in self.adj.values()) // 2
-
-    def print_graph(self):
+    def print(self):
         for node, neighbors in self.adj.items():
             print(f"{node}: {sorted(neighbors)}")
 
 
 def hamilton_cycle(graph: AdjacencyListGraph) -> list[int] | None:
-    n = graph.n
     path = [0]
-    visited = [False] * n
+    visited = [False] * graph.n
     visited[0] = True
 
     def backtrack(pos):
-        if len(path) == n:
+        if len(path) == graph.n:
             if path[0] in graph.adj[path[-1]]:
                 path.append(path[0])
                 return True
@@ -78,7 +77,7 @@ def euler_cycle(graph: AdjacencyListGraph) -> list[int] | None:
         cycle.append(current)
         current = stack.pop()
 
-    if len(cycle) == graph.edge_count + 1:
+    if len(cycle) == graph.edges + 1:
         return cycle
    
     return None
