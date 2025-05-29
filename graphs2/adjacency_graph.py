@@ -79,5 +79,7 @@ def euler_cycle(graph: AdjacencyListGraph) -> list[int] | None:
 
     if len(cycle) == graph.edges + 1:
         return cycle
-   
+    
+    print(cycle)
+
     return None
